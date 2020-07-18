@@ -36,7 +36,7 @@
 #    changed for new stations JSON format
 #--------------------------------------------------------------------------------
 $Version = 'BOmapgen - V1.05 - 30-Oct-2018';
-$Credits = 'script by saratoga-weather.org';
+//$Credits = 'script by saratoga-weather.org'; //added in gen-BO-maps.php
 $mainURL = 'data.blitzortung.org';
 #$mainURL = 'data2.blitzortung.org';
 #$mainURL = 'data.lightningmaps.org';
@@ -711,7 +711,7 @@ function showStation(station) {
   $xl= 0; $xr= $img_width; $yt= 0; $yb= 16;
   imagefilledpolygon ($img, array ($xl, $yt, $xl, $yb, $xr, $yb, $xr, $yt), 4, $bground_col);
   imageline ($img, $xl, $yb+1, $xr, $yb+1, $black);
-  $text= sprintf ("www.Blitzortung.org %s - %s / %d Strikes", date('Y-m-d T g:ia',$end_time-$time_interval), date('g:ia',$end_time), $strikes);
+  $text= sprintf ("www.Blitzortung.org %s - %s / %d Strikes", date('d.m.Y. T H:i',$end_time-$time_interval), date('H:i',$end_time), $strikes);	
   imagestring ($img, 5, 5, 0, $text, $white);
   
   
@@ -719,16 +719,29 @@ function showStation(station) {
   // draw legend
   //
   if(isset($legendLoc)) {
-	  $y = preg_match('|top|i',$legendLoc)?$yb+2:$img_height-153;
-	  $x = preg_match('|left|i',$legendLoc)?1:$img_width-104;
+	if($show_stations == true) {
+		$y = preg_match('|top|i',$legendLoc)?$yb+2:$img_height-153;
+	} else {
+		$y = preg_match('|top|i',$legendLoc)?$yb+2:$img_height-85;
+	}
+	  $x = preg_match('|left|i',$legendLoc)?0:$img_width-104;
   } else {
 	$x= 1;
-	$y= $img_height - 90;
+	$y= $img_height - 90; 
   }
   
    $w= 102;
-   $h= 152;
+	if($show_stations == true) {
+		$h= 152;
+	} else {
+		$h= 87;
+	}
   
+  if ($Credits_background == true){
+  	imagefilledpolygon ($img, array (0, $img_height, 0, $img_height-12, $img_width, $img_height-12, $img_width, $img_height), 4, $bground_col);
+  	imageline ($img, 1, $img_height-13, $img_width, $img_height-13, $black);
+}
+	
   imagefilledpolygon ($img, array ($x, $y, $x, $y+$h, $x+$w, $y+$h, $x+$w, $y), 4, $bground_col);
   imageline ($img, $x, $y+$h+1, $x+$w, $y+$h+1, $black);
   imageline ($img, $x+$w+1, $y, $x+$w+1, $y+$h+1, $black);
@@ -750,6 +763,7 @@ function showStation(station) {
   
   // draw Station Legend
   //10 = offline, 20 = idle, 30 = running, 40 = interference, f=fault
+if($show_stations == true) {	
   $Legends = array(
 	 'Active' => array($active_col,'30'),
 	 'Interference' => array($interf_col,'40'),
@@ -774,7 +788,8 @@ function showStation(station) {
 	$y+=11;
   }
 	log_msg("Legend drawn for ".count($Legends)." types of station status.\n");
-
+}
+	
   // credit where credit is due :) 
   $y = $img_height - imagefontheight(1)-2;
   $x = ($img_width / 2) - (imagefontwidth(1)*strlen($Credits)/2);
