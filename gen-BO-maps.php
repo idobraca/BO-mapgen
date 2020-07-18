@@ -23,6 +23,10 @@ $doLog = true;    # =true, generate the log (recommended), =false suppress log
 $doPrint = true;  # =true, also print log to output (not required, but helpful for debug)
 $doMapArea = true; #=true, gen <map><area> files for clickable detailed stats.
 
+$show_stations = false; // draw lightning stations
+$Credits = 'Lightning detection station powered by rovinj.net - Script by saratoga-weather.org';
+$Credits_background = true; //show background for Credits
+
 $numimages = 12; // number of images in animated GIFs
 
 $MapList = array(
